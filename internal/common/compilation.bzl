@@ -381,7 +381,15 @@ def compile_ts(
         )
 
         devmode_manifest = ctx.actions.declare_file(ctx.label.name + ".es5.MF")
-        tsconfig_json_es5 = ctx.actions.declare_file(ctx.label.name + "_es5_tsconfig.json")
+
+        rh_target_override = getattr(ctx.attr, "rh_target_override")
+        if(rh_target_override):
+            tsconfig_json_es5 = ctx.actions.declare_file(
+                ctx.label.name + "_" + rh_target_override + "_tsconfig.json")
+        else:
+            tsconfig_json_es5 = ctx.actions.declare_file(
+                ctx.label.name + "_es5_tsconfig.json")
+
         outputs = (
             transpiled_devmode_js + gen_declarations + [devmode_manifest]
         )
