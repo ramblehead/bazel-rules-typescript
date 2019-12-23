@@ -223,6 +223,7 @@ def _outputs(ctx, label, srcs_files = []):
 def compile_ts(
         ctx,
         is_library,
+        RhTargetProvider,
         srcs = None,
         deps = None,
         compile_action = None,
@@ -385,7 +386,16 @@ def compile_ts(
         )
 
         devmode_manifest = ctx.actions.declare_file(ctx.label.name + ".es5.MF")
-        tsconfig_json_es5 = ctx.actions.declare_file(ctx.label.name + "_es5_tsconfig.json")
+
+        rh_target_override = \
+            ctx.attr.rh_target_override[RhTargetProvider].target
+        if(rh_target_override == "default"):
+            tsconfig_json_es5 = ctx.actions.declare_file(
+                ctx.label.name + "_es5_tsconfig.json")
+        else:
+            tsconfig_json_es5 = ctx.actions.declare_file(
+                ctx.label.name + "_" + rh_target_override + "_tsconfig.json")
+
         outputs = (
             transpiled_devmode_js + gen_declarations + [devmode_manifest]
         )
